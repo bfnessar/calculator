@@ -1,3 +1,7 @@
+/*
+  Examples: 10+3*4+21/7*3-4+8*2 becomes 10 3 4 * 21 7 3 * / 4 8 2 * + - + +
+*/
+
 ( function() {
   angular
     .module('myApp.view1')
@@ -25,7 +29,7 @@
         // Splits the string into single characters (multi-digit numbers are not yet grouped)
         var trimmed_string = string.replace(/\s+/g, "");
         var char_array = trimmed_string.split("");
-        console.log(char_array);
+        // console.log(char_array);
 
         var token_array = [];
         var current_token = '';
@@ -49,37 +53,40 @@
           }
         }
 
-        console.log(token_array);
+        // console.log(token_array);
 
-        // Calculate
-        // Convert expressin into postfix. See http://csis.pace.edu/~wolf/CS122/infix-postfix.htm
+        // Convert expression into postfix. See http://csis.pace.edu/~wolf/CS122/infix-postfix.htm
         var operator_stack = [];
-        var postfix_list = [];
+        var output_list = [];
         for (var i=0; i<token_array.length; i++) {
           var current_token = token_array[i];
-          if (current_token.match(/d+/)){
-            postfix_list.push(current_token);
+          if (current_token.match(/\d+/)){
+            output_list.push(current_token);
           }
 
           else if (current_token.match(/[\*\/]/)){
-
+            operator_stack.push(current_token);
           }
 
           else if (current_token.match(/[\+\-]/)) {
-            if (operator_stack[operator_stack.length].match(/[\*\/]/)){
-              postfix_list.push( operator_stack.pop() );
+            while (operator_stack.length > 0 && operator_stack[operator_stack.length-1].match(/[\*\/]/)){
+              output_list.push( operator_stack.pop() );
             }
-            else {
-              operator_stack.push(current_token);
-            }
+            operator_stack.push(current_token);
           }
+          console.log("operator_stack: " + operator_stack);
+          console.log("postfix value: " + output_list);
+          console.log("\n");
         }
+        while (operator_stack.length > 0 ) {
+          output_list.push( operator_stack.pop() );
+        };
+        console.log(output_list.toString());
 
 
 
 
         // Output
-        console.log("12345");
         this.result = "12345";
       },
 
