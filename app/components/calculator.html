@@ -1,11 +1,13 @@
 <div layout="row">
-  <div id="input-box">
-    <textarea ng-model="inputstring"></textarea>
+  <div id="input-box" layout="row">
+    <textarea ng-model="model.inputstring"></textarea>
+    <button ng-click="model.calculateButton(model.inputstring)">Get</button>
   </div>
 
-  <div id="output-box" layout="column" >
-    <textarea readonly></textarea>
-    <button>Get</button>
+  <div id="output-box">
+    <textarea readonly>{{model.result}}</textarea>
   </div>
 
 </div>
+
+<button ng-click="model.dbg()">QQQQ</button>

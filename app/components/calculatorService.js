@@ -6,15 +6,40 @@
 
   function calculatorService($http, $q, $rootScope) {
     var CalculatorService = {
-      'var1': '',
+      'inputstring': '',
+      'result': 'asdfsadf',
 
-      func1: function(var) {
+      calculateButton(string) {
+        var myself = this;
 
+        // Validate Input
+        var token_array = string.split("");
+        console.log(token_array);
+
+        // Calculate
+
+
+        // Output
+        console.log("12345");
+        this.result = "12345";
+      },
+
+      validateInput: function(string) {
+
+      },
+
+      calculate: function(string) {
+
+      },
+
+      dbg: function() {
+        console.log("jkl;jkl;");
       },
 
     };
 
-    return CalculatorService
+    console.log("dfadsfa");
+    return CalculatorService;
 
   };
 
