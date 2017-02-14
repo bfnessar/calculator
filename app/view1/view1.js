@@ -9,6 +9,13 @@ angular.module('myApp.view1', ['ngRoute'])
   });
 }])
 
-.controller('View1Ctrl', [function() {
+.controller('View1Ctrl', [
+  '$scope', 'calculatorService',
+  function($scope, calculatorService) {
+    var vm = this;
+    var calculator_instance = angular.copy(calculatorService);
 
-}]);
+
+
+  }
+]);
