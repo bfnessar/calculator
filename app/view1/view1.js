@@ -14,8 +14,5 @@ angular.module('myApp.view1', ['ngRoute'])
   function($scope, calculatorService) {
     var vm = this;
     vm.calculatorInstance = angular.copy(calculatorService);
-
-
-
   }
 ]);

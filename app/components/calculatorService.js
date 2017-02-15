@@ -11,7 +11,8 @@
   function calculatorService($http, $q, $rootScope) {
     var CalculatorService = {
       'inputstring': '',
-      'result': 'asdfsadf',
+      'postfix_notation': '',
+      'result': 'result goes here',
 
       validateCharacters(string) {
         // Validate characters
@@ -51,6 +52,7 @@
             current_token = '';
           }
         }
+        console.log("tokenified to: " + token_array);
         return token_array;
       },
 
@@ -58,19 +60,38 @@
         if (tokens_infix.length < 1){
           return false;
         };
-        for (var i=0; i < token_array.length; i++) {
-          if (token_array[0].match(/[^\d*]/)) {
+
+        // First token must be operand
+        if (!tokens_infix[0].match(/[\d]/)) {
+          console.log("error: expression must begin with an operand");
+          return false;
+        }
+        // Last token must be operand
+        else if (tokens_infix[tokens_infix.length-1].match(/[^\d]/)){
+          console.log("error: must end with an operand");
+          return false;
+        }
+
+        for (var i=1; i < tokens_infix.length; i++) {
+          var current_token = tokens_infix[i];
+          var previous_token = tokens_infix[i-1];
+          // console.log("current: " + current_token + ", prev: " + previous_token);
+
+          if ( current_token.match(/[\d]/) && previous_token.match(/[\d]/) ) {
+            console.log("error: two consecutive operands");
             return false;
           }
-        }
+          else if ( !current_token.match(/[\d]/) && !previous_token.match(/[\d]/) ) {
+            console.log("error: two consecutive operators");
+            return false;
+          }
+
+        };
+        console.log("expression is valid!");
+        return true;
       },
 
-      calculateButton(string) {
-        var myself = this;
-
-        string = this.validateCharacters(string);
-        var token_array = this.tokenify(string);
-
+      toPostfix(token_array) {
         // Convert expression into postfix. See http://csis.pace.edu/~wolf/CS122/infix-postfix.htm
         var operator_stack = [];
         var output_list = [];
@@ -101,7 +122,6 @@
         while (operator_stack.length > 0 ) {
           output_list.push( operator_stack.pop() );
         };
-        console.log(output_list.toString());
         /*  Valid for outputs:
               5+3*2-1 = 10
               2*4-5+1 = 4
@@ -109,26 +129,69 @@
               10*3-5+4*2-30/15 = 31
 
         */
+        this.postfix_notation = angular.copy(output_list.toString());
+        return output_list;
+      },
+
+      calculatePostfixed(postfixed_array) {
+        var token_stack = [];
+        for (var i=0; i<postfixed_array.length; i++) {
+          var current_token = postfixed_array[i];
+          if (current_token.match(/[\d]/)) {
+            token_stack.push(current_token);
+          }
+          else {
+            var right_operand = parseFloat(token_stack.pop());
+            var left_operand = parseFloat(token_stack.pop());
+            var tmp_result;
+            switch(current_token) {
+              case '+': {
+                tmp_result = left_operand + right_operand;
+                break;
+              }
+              case '-': {
+                tmp_result = left_operand - right_operand;
+                break;
+              }
+              case '*': {
+                tmp_result = left_operand * right_operand;
+                break;
+              }
+              case '/': {
+                tmp_result = left_operand / right_operand;
+                break;
+              }
+            }
+            console.log(`${left_operand} ${current_token} ${right_operand} = ${tmp_result}`);
+            token_stack.push(tmp_result.toString());
+          }
+        }
+        return tmp_result.toString();
+      },
+
+      calculateButton(string) {
+        var myself = this;
+
+        string = this.validateCharacters(string);
+        if (!string) {
+          return false;
+        }
+        var token_array = this.tokenify(string);
+        if (!this.validateExpression(token_array)) {
+          return false;
+        }
+
+        var postfixed_array = this.toPostfix(token_array);
+        console.log(postfixed_array.toString());
+        var result = this.calculatePostfixed(postfixed_array);
+        console.log("result is: " + result);
 
         // Output
-        this.result = "12345";
-      },
-
-      validateInput: function(string) {
-
-      },
-
-      calculate: function(string) {
-
-      },
-
-      dbg: function() {
-        console.log("jkl;jkl;");
+        this.result = result;
       },
 
     };
 
-    console.log("dfadsfa");
     return CalculatorService;
 
   };

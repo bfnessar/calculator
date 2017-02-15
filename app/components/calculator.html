@@ -1,10 +1,17 @@
-<div layout="row">
-  <div id="input-box" layout="row">
-    <textarea ng-model="model.inputstring"></textarea>
+<div layout="column" class="calculator" style="padding-left:10px;">
+
+  <h2>Expression Calculator</h2>
+
+  <div id="inputs" layout="row">
+    <textarea cols="60" ng-model="model.inputstring" placeholder="input an expression, then click 'Get'"></textarea>
     <button ng-click="model.calculateButton(model.inputstring)">Get</button>
   </div>
 
-  <div id="output-box">
+  <div id="postfix" placeholder="Your expression converted to postfix notation">
+    <textarea cols="60" readonly>{{model.postfix_notation}}</textarea>
+  </div>
+
+  <div id="result" placeholder="Your result">
     <textarea readonly>{{model.result}}</textarea>
   </div>
 
